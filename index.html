@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casino</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --calc-bg: #1e1e1e;
+            --led-speed: 4s;
+            --neon-green: #00ff41;
+            --gold: #f39c12;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+       
+        .led-border {
+            position: relative;
+            padding: 8px;
+            background: #000;
+            border-radius: 25px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .led-border::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000
+            );
+            animation: rotate var(--led-speed) linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+      
+        .calculator {
+            position: relative;
+            background: var(--calc-bg);
+            padding: 20px;
+            border-radius: 20px;
+            z-index: 1;
+            width: 320px;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        
+        .screen {
+            background: #000;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: right;
+            border: 2px solid #333;
+            box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1);
+        }
+
+        #history {
+            color: #888;
+            font-size: 1rem;
+            min-height: 1.2rem;
+            margin-bottom: 5px;
+            word-wrap: break-word;
+        }
+
+        #result {
+            color: var(--neon-green);
+            font-size: 2.2rem;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: #333;
+            color: white;
+            font-weight: bold;
+            transition: 0.1s;
+            box-shadow: 0 4px #000;
+        }
+
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px #000;
+        }
+
+        .btn-op { color: var(--gold); background: #3d3d3d; }
+        .btn-spec { background: #8e1a1a; color: #fff; } 
+        .btn-equal { 
+            background: linear-gradient(145deg, #27ae60, #1e8449);
+            grid-column: span 2;
+        }
+
+        button:hover {
+            filter: brightness(1.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="led-border">
+    <div class="calculator">
+        <div class="screen">
+            <div id="history"></div>
+            <div id="result">0</div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn-spec" onclick="clearAll()">AC</button>
+            <button class="btn-spec" onclick="deleteLast()">DEL</button>
+            <button class="btn-op" onclick="append('%')">%</button>
+            <button class="btn-op" onclick="append('/')">÷</button>
+            
+            <button onclick="append('7')">7</button>
+            <button onclick="append('8')">8</button>
+            <button onclick="append('9')">9</button>
+            <button class="btn-op" onclick="append('*')">×</button>
+            
+            <button onclick="append('4')">4</button>
+            <button onclick="append('5')">5</button>
+            <button onclick="append('6')">6</button>
+            <button class="btn-op" onclick="append('-')">-</button>
+            
+            <button onclick="append('1')">1</button>
+            <button onclick="append('2')">2</button>
+            <button onclick="append('3')">3</button>
+            <button class="btn-op" onclick="append('+')">+</button>
+            
+            <button onclick="append('0')">0</button>
+            <button onclick="append('.')">.</button>
+            <button class="btn-equal" onclick="solve()">=</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentInput = "";
+    let isCalculated = false;
+
+    const historyDiv = document.getElementById('history');
+    const resultDiv = document.getElementById('result');
+
+    function append(value) {
+        
+        if (isCalculated && !isNaN(value)) {
+            currentInput = value;
+            isCalculated = false;
+        } else {
+            currentInput += value;
+            isCalculated = false;
+        }
+        updateDisplay();
+    }
+
+    function clearAll() {
+        currentInput = "";
+        historyDiv.innerText = "";
+        resultDiv.innerText = "0";
+    }
+
+    function deleteLast() {
+        currentInput = currentInput.toString().slice(0, -1);
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        resultDiv.innerText = currentInput || "0";
+    }
+
+    function solve() {
+        try {
+            if (currentInput === "") return;
+
+            
+            historyDiv.innerText = currentInput + " =";
+            
+           
+            let calculation = currentInput.replace(/%/g, '/100');
+            let finalResult = eval(calculation);
+
+           
+            resultDiv.innerText = Number.isInteger(finalResult) ? finalResult : finalResult.toFixed(4);
+            
+          
+            currentInput = finalResult.toString();
+            isCalculated = true;
+        } catch (error) {
+            resultDiv.innerText = "Lỗi!";
+            currentInput = "";
+        }
+    }
+</script>
+
+</body>
+</html>
