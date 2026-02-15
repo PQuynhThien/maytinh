@@ -3,223 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casino</title>
+    <title>Ai là người đẹp trai nhất?</title>
     <style>
+        /* CSS - Giao diện hiện đại */
         :root {
-            --bg-color: #0f0f0f;
-            --calc-bg: #1e1e1e;
-            --led-speed: 4s;
-            --neon-green: #00ff41;
-            --gold: #f39c12;
+            --primary-color: #ff4757;
+            --secondary-color: #2ed573;
+            --bg-color: #f1f2f6;
         }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: var(--bg-color);
+        body, html {
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-       
-        .led-border {
-            position: relative;
-            padding: 8px;
-            background: #000;
-            border-radius: 25px;
-            overflow: hidden;
+            padding: 0;
+            height: 100%;
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; /* Ngăn cuộn trang khi nút nhảy */
         }
 
-        .led-border::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(
-                #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000
-            );
-            animation: rotate var(--led-speed) linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-      
-        .calculator {
-            position: relative;
-            background: var(--calc-bg);
-            padding: 20px;
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
             border-radius: 20px;
-            z-index: 1;
-            width: 320px;
-            box-shadow: inset 0 0 20px #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 400px;
+            position: relative;
         }
 
-        
-        .screen {
-            background: #000;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: right;
-            border: 2px solid #333;
-            box-shadow: inset 0 0 15px rgba(0, 255, 65, 0.1);
+        h1 {
+            color: #2f3542;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
         }
 
-        #history {
-            color: #888;
-            font-size: 1rem;
-            min-height: 1.2rem;
-            margin-bottom: 5px;
-            word-wrap: break-word;
-        }
-
-        #result {
-            color: var(--neon-green);
-            font-size: 2.2rem;
-            font-weight: bold;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            height: 60px;
+            align-items: center;
         }
 
         button {
-            padding: 18px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            background: #333;
-            color: white;
+            padding: 12px 35px;
+            font-size: 1.1rem;
             font-weight: bold;
-            transition: 0.1s;
-            box-shadow: 0 4px #000;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
         }
 
-        button:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px #000;
+        /* Nút Thiện - Nút đúng */
+        #btnThien {
+            background-color: var(--secondary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 213, 115, 0.3);
         }
 
-        .btn-op { color: var(--gold); background: #3d3d3d; }
-        .btn-spec { background: #8e1a1a; color: #fff; } 
-        .btn-equal { 
-            background: linear-gradient(145deg, #27ae60, #1e8449);
-            grid-column: span 2;
+        #btnThien:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(46, 213, 115, 0.5);
         }
 
-        button:hover {
-            filter: brightness(1.2);
+        /* Nút Phúc - Nút chạy trốn */
+        #btnPhuc {
+            background-color: var(--primary-color);
+            color: white;
+            position: absolute; /* Quan trọng để di chuyển tự do */
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+            white-space: nowrap;
         }
+
+        /* Overlay thông báo đẹp */
+        #customAlert {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .alert-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .alert-box h2 { color: #2ed573; }
+        .alert-box button { margin-top: 15px; background: #333; color: white; }
+
     </style>
 </head>
 <body>
 
-<div class="led-border">
-    <div class="calculator">
-        <div class="screen">
-            <div id="history"></div>
-            <div id="result">0</div>
-        </div>
-        
-        <div class="buttons">
-            <button class="btn-spec" onclick="clearAll()">AC</button>
-            <button class="btn-spec" onclick="deleteLast()">DEL</button>
-            <button class="btn-op" onclick="append('%')">%</button>
-            <button class="btn-op" onclick="append('/')">÷</button>
-            
-            <button onclick="append('7')">7</button>
-            <button onclick="append('8')">8</button>
-            <button onclick="append('9')">9</button>
-            <button class="btn-op" onclick="append('*')">×</button>
-            
-            <button onclick="append('4')">4</button>
-            <button onclick="append('5')">5</button>
-            <button onclick="append('6')">6</button>
-            <button class="btn-op" onclick="append('-')">-</button>
-            
-            <button onclick="append('1')">1</button>
-            <button onclick="append('2')">2</button>
-            <button onclick="append('3')">3</button>
-            <button class="btn-op" onclick="append('+')">+</button>
-            
-            <button onclick="append('0')">0</button>
-            <button onclick="append('.')">.</button>
-            <button class="btn-equal" onclick="solve()">=</button>
+    <div class="container">
+        <h1>Ai là người đẹp trai nhất?</h1>
+        <div class="btn-group">
+            <button id="btnThien" onclick="showSuccess()">Thiện</button>
+            <button id="btnPhuc">Phúc</button>
         </div>
     </div>
-</div>
 
-<script>
-    let currentInput = "";
-    let isCalculated = false;
+    <div id="customAlert">
+        <div class="alert-box">
+            <h2>Chúc mừng! 🎉</h2>
+            <p>Bạn đã chọn đúng người đẹp trai nhất!</p>
+            <button onclick="closeAlert()">Tuyệt vời</button>
+        </div>
+    </div>
 
-    const historyDiv = document.getElementById('history');
-    const resultDiv = document.getElementById('result');
+    <script>
+        const btnPhuc = document.getElementById('btnPhuc');
+        const customAlert = document.getElementById('customAlert');
 
-    function append(value) {
+        // Hàm di chuyển nút Phúc ngẫu nhiên
+        function moveButton() {
+            // Lấy kích thước màn hình hiện tại
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Lấy kích thước nút
+            const btnWidth = btnPhuc.offsetWidth;
+            const btnHeight = btnPhuc.offsetHeight;
+
+            // Tính toán vị trí ngẫu nhiên (tránh việc nút văng ra ngoài màn hình)
+            const randomX = Math.floor(Math.random() * (windowWidth - btnWidth));
+            const randomY = Math.floor(Math.random() * (windowHeight - btnHeight));
+
+            // Cập nhật vị trí mới
+            btnPhuc.style.left = randomX + 'px';
+            btnPhuc.style.top = randomY + 'px';
+            btnPhuc.style.position = 'fixed'; // Chuyển sang fixed để nhảy khắp màn hình
+        }
+
+        // Sự kiện khi di chuột vào nút Phúc
+        btnPhuc.addEventListener('mouseover', moveButton);
         
-        if (isCalculated && !isNaN(value)) {
-            currentInput = value;
-            isCalculated = false;
-        } else {
-            currentInput += value;
-            isCalculated = false;
+        // Sự kiện khi cố gắng click vào nút Phúc (cho mobile hoặc click nhanh)
+        btnPhuc.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
+
+        // Hàm hiển thị thông báo khi chọn Thiện
+        function showSuccess() {
+            customAlert.style.display = 'flex';
         }
-        updateDisplay();
-    }
 
-    function clearAll() {
-        currentInput = "";
-        historyDiv.innerText = "";
-        resultDiv.innerText = "0";
-    }
-
-    function deleteLast() {
-        currentInput = currentInput.toString().slice(0, -1);
-        updateDisplay();
-    }
-
-    function updateDisplay() {
-        resultDiv.innerText = currentInput || "0";
-    }
-
-    function solve() {
-        try {
-            if (currentInput === "") return;
-
-            
-            historyDiv.innerText = currentInput + " =";
-            
-           
-            let calculation = currentInput.replace(/%/g, '/100');
-            let finalResult = eval(calculation);
-
-           
-            resultDiv.innerText = Number.isInteger(finalResult) ? finalResult : finalResult.toFixed(4);
-            
-          
-            currentInput = finalResult.toString();
-            isCalculated = true;
-        } catch (error) {
-            resultDiv.innerText = "Lỗi!";
-            currentInput = "";
+        function closeAlert() {
+            customAlert.style.display = 'none';
         }
-    }
-</script>
-
+    </script>
 </body>
 </html>
